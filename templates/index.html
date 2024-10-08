@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleep Prediction Model</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #28a745;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #218838;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Sleep Prediction Model</h1>
+        <form id="prediction-form">
+            <label for="last_locked_hour">Last Locked Hour:</label>
+            <input type="number" id="last_locked_hour" required>
+
+            <label for="last_locked_min">Last Locked Minute:</label>
+            <input type="number" id="last_locked_min" required>
+
+            <label for="current_time_hour">Current Time Hour:</label>
+            <input type="number" id="current_time_hour" required>
+
+            <label for="current_time_min">Current Time Minute:</label>
+            <input type="number" id="current_time_min" required>
+
+            <button type="submit">Predict</button>
+        </form>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('prediction-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const last_locked_hour = document.getElementById('last_locked_hour').value;
+            const last_locked_min = document.getElementById('last_locked_min').value;
+            const current_time_hour = document.getElementById('current_time_hour').value;
+            const current_time_min = document.getElementById('current_time_min').value;
+
+            const data = {
+                last_locked_hour: Number(last_locked_hour),
+                last_locked_min: Number(last_locked_min),
+                current_time_hour: Number(current_time_hour),
+                current_time_min: Number(current_time_min)
+            };
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('result').innerText = `Prediction: ${data.prediction}`;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+</body>
+
+</html>
